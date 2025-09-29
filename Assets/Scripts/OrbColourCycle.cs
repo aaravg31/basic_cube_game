@@ -2,10 +2,16 @@ using UnityEngine;
 
 public class OrbColourCycle : MonoBehaviour
 {
-    [SerializeField] private Renderer orbRenderer;  
+    // The Renderer that displays the orb (drag in via Inspector)
+    [SerializeField] private Renderer orbRenderer; 
+    
+    // How long the orb exists before disappearing (should match TrailScript orbLifetime)
     [SerializeField] private float lifetime = 5f; 
 
+    // Internal reference to the orb's material (so each orb has its own unique instance)
     private Material orbMaterial;
+    
+    // When this orb was spawned
     private float spawnTime;
 
     void Start()
@@ -13,6 +19,7 @@ public class OrbColourCycle : MonoBehaviour
         // Get a unique material instance so we don't affect all orbs at once
         orbMaterial = orbRenderer.material;
         
+        // Record the spawn time so we can track lifetime progress
         spawnTime = Time.time;
     }
 
@@ -20,7 +27,7 @@ public class OrbColourCycle : MonoBehaviour
     {
         // How far along its lifetime the orb is (0 → 1)
         float age = (Time.time - spawnTime) / lifetime;
-        age = Mathf.Clamp01(age);
+        age = Mathf.Clamp01(age); // ensure stays in [0, 1]
 
         // Define key colors
         Color c1 = Color.cyan;              // start
@@ -34,7 +41,7 @@ public class OrbColourCycle : MonoBehaviour
         else
             finalColor = Color.Lerp(c2, c3, (age - 0.5f) * 2f);
 
-        // Apply to base + glow
+        // Apply color to orb material and make it glow by setting Emission
         orbMaterial.color = finalColor;
         orbMaterial.SetColor("_EmissionColor", finalColor * 2f);
     }

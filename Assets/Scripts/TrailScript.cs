@@ -2,30 +2,37 @@ using UnityEngine;
 
 public class TrailScript : MonoBehaviour
 {
+    // Prefab of the glowing orb to spawn
     [SerializeField] private GameObject orbPrefab;
-    [SerializeField] private float spawnInterval = 0.3f;  // seconds between orbs
+    
+    // How often to spawn orbs (in seconds)
+    [SerializeField] private float spawnInterval = 0.3f;
+    
+    // How long each orb should exist before being destroyed
     [SerializeField] private float orbLifetime = 5f;
     
+    // Internal timer to keep track of spawn intervals
     private float timer;
     
     void Update()
     {
-        // Count up the timer
+        // Increase timer every frame by the time passed since last frame
         timer += Time.deltaTime;
 
-        // Drop orb every interval
+        // If enough time has passed, spawn an orb
         if (timer >= spawnInterval)
         {
             SpawnOrb();
+            // Reset timer back to 0 for the next interval
             timer = 0f;
         }
     }
     void SpawnOrb()
     {
-        // Spawn glowing orb at player's position
+        // Spawn a new orb at the player's current position
         GameObject orb = Instantiate(orbPrefab, transform.position, Quaternion.identity);
 
-        // Destroy orb after X seconds
+        // Destroy orb after orbLifetime seconds
         Destroy(orb, orbLifetime);
     }
     
